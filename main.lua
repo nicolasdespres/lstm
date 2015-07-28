@@ -10,21 +10,9 @@
 torch.manualSeed(42)
 print(string.format("Initial seed: %f", torch.initialSeed()))
 
-local ok,cunn = pcall(require, 'fbcunn')
-if not ok then
-    ok,cunn = pcall(require,'cunn')
-    if ok then
-        print("warning: fbcunn not found. Falling back to cunn")
-        LookupTable = nn.LookupTable
-    else
-        print("Could not find cunn or fbcunn. Either is required")
-        os.exit()
-    end
-else
-    deviceParams = cutorch.getDeviceProperties(1)
-    cudaComputeCapability = deviceParams.major + deviceParams.minor/10
-    LookupTable = nn.LookupTable
-end
+nn = require('nn')
+LookupTable = nn.LookupTable
+
 require('nngraph')
 require('base')
 local ptb = require('data')
@@ -74,7 +62,7 @@ local params = {batch_size=20,
                 max_grad_norm=5}
 
 local function transfer_data(x)
-  return x:cuda()
+  return x
 end
 
 local state_train, state_valid, state_test
@@ -200,7 +188,6 @@ local function bp(state)
     local tmp = model.rnns[i]:backward({x, y, s},
                                        {derr, model.ds})[3]
     g_replace_table(model.ds, tmp)
-    cutorch.synchronize()
   end
   state.pos = state.pos + params.seq_length
   model.norm_dw = paramdx:norm()
@@ -291,7 +278,6 @@ local function main()
       end
     end
     if step % 33 == 0 then
-      cutorch.synchronize()
       collectgarbage()
     end
   end
