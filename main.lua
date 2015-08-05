@@ -54,6 +54,20 @@ local params = {batch_size=20,
                 max_max_epoch=13,
                 max_grad_norm=5}
 
+-- Trains 33min and gives test 120 perplexity.
+local params = {batch_size=20,
+                seq_length=20,
+                layers=1,
+                decay=2,
+                rnn_size=200,
+                dropout=0,
+                init_weight=0.1,
+                lr=1,
+                vocab_size=10000,
+                max_epoch=4,
+                max_max_epoch=13,
+                max_grad_norm=5}
+
 local function transfer_data(x)
   return x:cuda()
 end
