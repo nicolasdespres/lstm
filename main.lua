@@ -245,6 +245,9 @@ local function main()
   while epoch < params.max_max_epoch do
     local perp = fp(state_train)
     if perps == nil then
+      print("Dumping architecture graph...")
+      graph.dot(model.core_network.fg, "LSTM", "LSTM-archi")
+      print("done")
       perps = torch.zeros(epoch_size):add(perp)
     end
     perps[step % epoch_size + 1] = perp
