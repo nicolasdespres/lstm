@@ -30,6 +30,7 @@ function g_enable_dropout(node)
   end
 end
 
+-- Clone *T* times module *net* and share all parameters
 function g_cloneManyTimes(net, T)
   local clones = {}
   local params, gradParams = net:parameters()
